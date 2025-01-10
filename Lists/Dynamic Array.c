@@ -56,7 +56,7 @@ dynamic_array* initialize_dynamic_array_from(const dynamic_array* list, const si
 
     if (list->data_size != data_size)
     {
-        fprintf(stderr, "Cannot initialize an array of different data_size\nlist->data_size = %lu != data_size = %lu",
+        fprintf(stderr, "Cannot initialize an array of different data_size\nlist->data_size = %lu != data_size = %lu\n",
                 list->data_size, data_size);
         return nullptr;
     }
@@ -78,7 +78,7 @@ static int grow_dynamic_list(dynamic_array* list)
 
     if (!data_ptr)
     {
-        fprintf(stderr, "No enough memory for dynamic array data resizing!\nOld dynamic data left as is!");
+        fprintf(stderr, "No enough memory for dynamic array data resizing!\nOld dynamic data left as is!\n");
         return 0;
     }
 
@@ -96,7 +96,7 @@ int add(dynamic_array* list, const void* data, const size_t data_size)
 
     if (list->data_size != data_size)
     {
-        fprintf(stderr, "Cannot add an element of different data_size\nlist->data_size = %lu != data_size = %lu",
+        fprintf(stderr, "Cannot add an element of different data_size\nlist->data_size = %lu != data_size = %lu\n",
                 list->data_size, data_size);
         return 0;
     }
@@ -123,7 +123,7 @@ int insert(dynamic_array* list, const size_t index, const void* data, const size
 
     if (list->data_size != data_size)
     {
-        fprintf(stderr, "Cannot add an element of different data_size\nlist->data_size = %lu != data_size = %lu",
+        fprintf(stderr, "Cannot add an element of different data_size\nlist->data_size = %lu != data_size = %lu\n",
                 list->data_size, data_size);
         return 0;
     }
@@ -157,7 +157,7 @@ int add_all(dynamic_array* list, dynamic_array* other_list)
 
     if (list->data_size != other_list->data_size)
     {
-        fprintf(stderr, "Cannot add an element of different data_size\nlist->data_size = %lu != data_size = %lu",
+        fprintf(stderr, "Cannot add an element of different data_size\nlist->data_size = %lu != data_size = %lu\n",
                 list->data_size, other_list->data_size);
         return 0;
     }
@@ -216,8 +216,9 @@ int contains(const dynamic_array* list, const void* data, const size_t data_size
 
     if (list->data_size != data_size)
     {
-        fprintf(stderr, "Cannot search for an element of different data_size\nlist->data_size = %lu != data_size = %lu",
-                list->data_size, data_size);
+        fprintf(
+            stderr, "Cannot search for an element of different data_size\nlist->data_size = %lu != data_size = %lu\n",
+            list->data_size, data_size);
         return 0;
     }
 
@@ -241,7 +242,8 @@ void ensure_capacity(dynamic_array* list, size_t capacity)
     }
     if (list->size > capacity)
     {
-        fprintf(stderr, "Can not change capacity elements will be lost, since capacity < list->size: %lu", list->size);
+        fprintf(stderr, "Can not change capacity elements will be lost, since capacity < list->size: %lu\n",
+                list->size);
         return;
     }
     if (list->capacity != capacity)
@@ -250,7 +252,7 @@ void ensure_capacity(dynamic_array* list, size_t capacity)
 
         if (!data_ptr)
         {
-            fprintf(stderr, "No enough memory for dynamic array data resizing!\nOld dynamic data left as is!");
+            fprintf(stderr, "No enough memory for dynamic array data resizing!\nOld dynamic data left as is!\n");
             return;
         }
 
@@ -269,7 +271,7 @@ void* get(dynamic_array* list, const size_t index)
 
     if (index >= list->size)
     {
-        fprintf(stderr, "Index Out of Bounds! %lu out of bounds of %lu", index, list->size - 1);
+        fprintf(stderr, "Index Out of Bounds! %lu out of bounds of %lu\n", index, list->size - 1);
         return nullptr;
     }
     return (char*)(list->data) + (index * list->data_size);
@@ -285,8 +287,9 @@ long long int index_of(const dynamic_array* list, const void* data, const size_t
 
     if (list->data_size != data_size)
     {
-        fprintf(stderr, "Cannot search for an element of different data_size\nlist->data_size = %lu != data_size = %lu",
-                list->data_size, data_size);
+        fprintf(
+            stderr, "Cannot search for an element of different data_size\nlist->data_size = %lu != data_size = %lu\n",
+            list->data_size, data_size);
         return -1;
     }
 
@@ -316,8 +319,9 @@ long long int last_index_of(dynamic_array* list, const void* data, const size_t 
 
     if (list->data_size != data_size)
     {
-        fprintf(stderr, "Cannot search for an element of different data_size\nlist->data_size = %lu != data_size = %lu",
-                list->data_size, data_size);
+        fprintf(
+            stderr, "Cannot search for an element of different data_size\nlist->data_size = %lu != data_size = %lu\n",
+            list->data_size, data_size);
         return -1;
     }
 
@@ -330,4 +334,41 @@ long long int last_index_of(dynamic_array* list, const void* data, const size_t 
         }
     }
     return -1;
+}
+
+void* remove_at(dynamic_array* list, const size_t index)
+{
+    if (!list)
+    {
+        fprintf(stderr, "Null pointer passed to remove_at()\n");
+        return nullptr;
+    }
+
+    if (index >= list->size)
+    {
+        fprintf(stderr, "Index Out of Bounds! %lu out of bounds of %lu\n", index, list->size - 1);
+        return nullptr;
+    }
+
+    void* res = malloc(list->data_size);
+
+    if (!res)
+    {
+        fprintf(stderr, "Failed to allocate memory for removed element\n");
+        return nullptr;
+    }
+
+    void* element_src = (char*)(list->data) + ((index) * list->data_size);
+    memcpy(res, element_src, list->data_size);
+
+    if (index < list->size)
+    {
+        const void* src = (char*)(list->data) + ((index + 1) * list->data_size);
+        void* dest = (char*)(list->data) + (index * list->data_size);
+        size_t buffer_size = (list->size - index - 1) * list->data_size;
+        memmove(dest, src, buffer_size);
+    }
+
+    list->size--;
+    return res;
 }
