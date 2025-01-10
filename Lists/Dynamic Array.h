@@ -10,9 +10,9 @@
 typedef struct DYNAMIC_ARRAY dynamic_array;
 
 
-dynamic_array* initialize_dynamic_array(size_t data_size);
-dynamic_array* initialize_dynamic_array(int size, size_t data_size);
-dynamic_array* initialize_dynamic_array(dynamic_array* list, size_t data_size);
+dynamic_array* initialize_dynamic_array_empty(size_t data_size);
+dynamic_array* initialize_dynamic_array_sized(int size, size_t data_size);
+dynamic_array* initialize_dynamic_array_from(dynamic_array* list, size_t data_size);
 int add(dynamic_array* list, void* data);
 int insert(dynamic_array* list, int index, void* data);
 int add_all(dynamic_array* list, dynamic_array* other_list);
@@ -24,8 +24,8 @@ void* get(dynamic_array* list, int i);
 int index_of(dynamic_array* list, void* data);
 int is_empty(dynamic_array* list);
 int last_index_of(dynamic_array* list, void* data);
-void* remove(dynamic_array* list, int index);
-int remove(dynamic_array* list, void* data);
+void* remove_at(dynamic_array* list, int index);
+int remove_element(dynamic_array* list, void* data);
 int remove_all(dynamic_array* list, dynamic_array* other_list);
 void remove_range(dynamic_array* list, int start, int end);
 size_t size(dynamic_array* list);
