@@ -90,7 +90,7 @@ int add(dynamic_array* list, const void* data, const size_t data_size)
 {
     if (!list || !data)
     {
-        fprintf(stderr, "Null pointer passed to add\n");
+        fprintf(stderr, "Null pointer passed to add()\n");
         return 0;
     }
 
@@ -115,6 +115,12 @@ int add(dynamic_array* list, const void* data, const size_t data_size)
 
 int insert(dynamic_array* list, const size_t index, const void* data, const size_t data_size)
 {
+    if (!list || !data)
+    {
+        fprintf(stderr, "Null pointer passed to insert()\n");
+        return 0;
+    }
+
     if (list->data_size != data_size)
     {
         fprintf(stderr, "Cannot add an element of different data_size\nlist->data_size = %lu != data_size = %lu",
@@ -143,6 +149,12 @@ int insert(dynamic_array* list, const size_t index, const void* data, const size
 
 int add_all(dynamic_array* list, dynamic_array* other_list)
 {
+    if (!list || !other_list)
+    {
+        fprintf(stderr, "Null pointer passed to add_all()\n");
+        return 0;
+    }
+
     if (list->data_size != other_list->data_size)
     {
         fprintf(stderr, "Cannot add an element of different data_size\nlist->data_size = %lu != data_size = %lu",
@@ -196,6 +208,12 @@ dynamic_array* clone(const dynamic_array* list)
 
 int contains(const dynamic_array* list, const void* data, const size_t data_size)
 {
+    if (!list || !data)
+    {
+        fprintf(stderr, "Null pointer passed to contains()\n");
+        return 0;
+    }
+
     if (list->data_size != data_size)
     {
         fprintf(stderr, "Cannot search for an element of different data_size\nlist->data_size = %lu != data_size = %lu",
@@ -216,6 +234,11 @@ int contains(const dynamic_array* list, const void* data, const size_t data_size
 
 void ensure_capacity(dynamic_array* list, size_t capacity)
 {
+    if (!list)
+    {
+        fprintf(stderr, "Null pointer passed to ensure_capacity()\n");
+        return;
+    }
     if (list->size > capacity)
     {
         fprintf(stderr, "Can not change capacity elements will be lost, since capacity < list->size: %lu", list->size);
@@ -238,6 +261,12 @@ void ensure_capacity(dynamic_array* list, size_t capacity)
 
 void* get(dynamic_array* list, const size_t index)
 {
+    if (!list)
+    {
+        fprintf(stderr, "Null pointer passed to get()\n");
+        return nullptr;
+    }
+
     if (index >= list->size)
     {
         fprintf(stderr, "Index Out of Bounds! %lu out of bounds of %lu", index, list->size - 1);
@@ -248,6 +277,12 @@ void* get(dynamic_array* list, const size_t index)
 
 long long int index_of(const dynamic_array* list, const void* data, const size_t data_size)
 {
+    if (!list || !data)
+    {
+        fprintf(stderr, "Null pointer passed to add\n");
+        return -1;
+    }
+
     if (list->data_size != data_size)
     {
         fprintf(stderr, "Cannot search for an element of different data_size\nlist->data_size = %lu != data_size = %lu",
