@@ -74,20 +74,26 @@ static int grow_dynamic_list(dynamic_array* list)
 {
     list->capacity <<= 1;
 
-    void* dataPtr = realloc(list->data, list->capacity * list->data_size);
+    void* data_ptr = realloc(list->data, list->capacity * list->data_size);
 
-    if (!dataPtr)
+    if (!data_ptr)
     {
         fprintf(stderr, "No enough memory for dynamic array data resizing!\nOld dynamic data left as is!");
         return 0;
     }
 
-    list->data = dataPtr;
+    list->data = data_ptr;
     return 1;
 }
 
 int add(dynamic_array* list, const void* data, const size_t data_size)
 {
+    if (!list || !data)
+    {
+        fprintf(stderr, "Null pointer passed to add\n");
+        return 0;
+    }
+
     if (list->data_size != data_size)
     {
         fprintf(stderr, "Cannot add an element of different data_size\nlist->data_size = %lu != data_size = %lu",
@@ -98,7 +104,7 @@ int add(dynamic_array* list, const void* data, const size_t data_size)
     // A short circuit occurs and no resizing occurs if size < capacity
     if (list->size < list->capacity || grow_dynamic_list(list))
     {
-        void* dest = (char*)list->data + (list->size * data_size);
+        void* dest = (char*)(list->data) + (list->size * data_size);
         memcpy(dest, data, data_size);
         list->size++;
         return 1;
@@ -121,16 +127,146 @@ int insert(dynamic_array* list, const size_t index, const void* data, const size
     {
         if (index < list->size)
         {
-            void* dest = (char*)list->data + ((index + 1) * data_size);
-            void* src = (char*)list->data + (index * data_size);
+            void* dest = (char*)(list->data) + ((index + 1) * data_size);
+            void* src = (char*)(list->data) + (index * data_size);
             size_t size = (list->size - index) * data_size;
             memmove(dest, src, size);
         }
-        void* dest = (char*)list->data + (index * data_size);
+        void* dest = (char*)(list->data) + (index * data_size);
         memcpy(dest, data, data_size);
         list->size++;
         return 1;
     }
 
     return 0;
+}
+
+int add_all(dynamic_array* list, dynamic_array* other_list)
+{
+    if (list->data_size != other_list->data_size)
+    {
+        fprintf(stderr, "Cannot add an element of different data_size\nlist->data_size = %lu != data_size = %lu",
+                list->data_size, other_list->data_size);
+        return 0;
+    }
+
+    while (list->capacity < (other_list->size + list->size))
+    {
+        if (!grow_dynamic_list(list))
+        {
+            return 0;
+        }
+    }
+
+    void* src = (char*)(other_list->data);
+    void* dest = (char*)(list->data) + (list->size * list->data_size);
+    memcpy(dest, src, other_list->data_size * other_list->size);
+    list->size += other_list->size;
+    return 1;
+}
+
+// Note: If the list stores pointers or other lists they should be freed individually before calling clear()
+// As that would cause a memory leak.
+void clear(dynamic_array* list)
+{
+    if (!list)
+    {
+        return;
+    }
+
+    free(list->data);
+    void* data_ptr = malloc(DEFAULT_CAPACITY * list->data_size);
+
+    if (!data_ptr)
+    {
+        fprintf(stderr, "Failed to allocate memory in clear()\n");
+        list->data = NULL;
+        return;
+    }
+
+    list->data = data_ptr;
+    list->size = 0;
+    list->capacity = DEFAULT_CAPACITY;
+}
+
+dynamic_array* clone(const dynamic_array* list)
+{
+    return initialize_dynamic_array_from(list, list->data_size);
+}
+
+int contains(const dynamic_array* list, const void* data, const size_t data_size)
+{
+    if (list->data_size != data_size)
+    {
+        fprintf(stderr, "Cannot search for an element of different data_size\nlist->data_size = %lu != data_size = %lu",
+                list->data_size, data_size);
+        return 0;
+    }
+
+    for (size_t i = 0; i < list->size; ++i)
+    {
+        void* src = (char*)(list->data) + (i * data_size);
+        if (!memcmp(data, src, data_size))
+        {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void ensure_capacity(dynamic_array* list, size_t capacity)
+{
+    if (list->size > capacity)
+    {
+        fprintf(stderr, "Can not change capacity elements will be lost, since capacity < list->size: %lu", list->size);
+        return;
+    }
+    if (list->capacity != capacity)
+    {
+        void* data_ptr = realloc(list->data, list->data_size * capacity);
+
+        if (!data_ptr)
+        {
+            fprintf(stderr, "No enough memory for dynamic array data resizing!\nOld dynamic data left as is!");
+            return;
+        }
+
+        list->data = data_ptr;
+        list->capacity = capacity;
+    }
+}
+
+void* get(dynamic_array* list, const size_t index)
+{
+    if (index >= list->size)
+    {
+        fprintf(stderr, "Index Out of Bounds! %lu out of bounds of %lu", index, list->size - 1);
+        return nullptr;
+    }
+    return (char*)(list->data) + (index * list->data_size);
+}
+
+long long int index_of(const dynamic_array* list, const void* data, const size_t data_size)
+{
+    if (list->data_size != data_size)
+    {
+        fprintf(stderr, "Cannot search for an element of different data_size\nlist->data_size = %lu != data_size = %lu",
+                list->data_size, data_size);
+        return -1;
+    }
+
+    for (size_t i = 0; i < list->size; ++i)
+    {
+        void* src = (char*)(list->data) + (i * data_size);
+        if (!memcmp(data, src, data_size))
+        {
+            return (long long int)i;
+        }
+    }
+    return -1;
+}
+
+int is_empty(const dynamic_array* list)
+{
+    return list->size == 0;
 }
