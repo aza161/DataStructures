@@ -26,7 +26,7 @@ void ensure_capacity(dynamic_array* list, size_t capacity);
 void* get(dynamic_array* list, const size_t index);
 long long int index_of(const dynamic_array* list, const void* data, const size_t data_size);
 int is_empty(const dynamic_array* list);
-int last_index_of(dynamic_array* list, const void* data, const size_t data_size);
+long long int last_index_of(dynamic_array* list, const void* data, const size_t data_size);
 void* remove_at(dynamic_array* list, const size_t index);
 int remove_element(dynamic_array* list, const void* data, const size_t data_size);
 int remove_all(dynamic_array* list, dynamic_array* other_list);

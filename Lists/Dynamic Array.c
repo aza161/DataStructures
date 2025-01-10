@@ -279,7 +279,7 @@ long long int index_of(const dynamic_array* list, const void* data, const size_t
 {
     if (!list || !data)
     {
-        fprintf(stderr, "Null pointer passed to add\n");
+        fprintf(stderr, "Null pointer passed to index_of()\n");
         return -1;
     }
 
@@ -292,7 +292,7 @@ long long int index_of(const dynamic_array* list, const void* data, const size_t
 
     for (size_t i = 0; i < list->size; ++i)
     {
-        void* src = (char*)(list->data) + (i * data_size);
+        const void* src = (char*)(list->data) + (i * data_size);
         if (!memcmp(data, src, data_size))
         {
             return (long long int)i;
@@ -304,4 +304,30 @@ long long int index_of(const dynamic_array* list, const void* data, const size_t
 int is_empty(const dynamic_array* list)
 {
     return list->size == 0;
+}
+
+long long int last_index_of(dynamic_array* list, const void* data, const size_t data_size)
+{
+    if (!list || !data)
+    {
+        fprintf(stderr, "Null pointer passed to last_index_of()\n");
+        return -1;
+    }
+
+    if (list->data_size != data_size)
+    {
+        fprintf(stderr, "Cannot search for an element of different data_size\nlist->data_size = %lu != data_size = %lu",
+                list->data_size, data_size);
+        return -1;
+    }
+
+    for (long long int i = (long long int)list->size - 1; i >= 0; --i)
+    {
+        const void* src = (char*)(list->data) + (i * data_size);
+        if (!memcmp(data, src, data_size))
+        {
+            return i;
+        }
+    }
+    return -1;
 }
