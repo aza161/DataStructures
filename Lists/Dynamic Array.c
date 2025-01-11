@@ -372,3 +372,39 @@ void* remove_at(dynamic_array* list, const size_t index)
     list->size--;
     return res;
 }
+
+int remove_element(dynamic_array* list, const void* data, const size_t data_size)
+{
+    if (!list || !data)
+    {
+        fprintf(stderr, "Null pointer passed to remove_at()\n");
+        return 0;
+    }
+
+    if (list->data_size != data_size)
+    {
+        fprintf(
+            stderr, "Cannot search for an element of different data_size\nlist->data_size = %lu != data_size = %lu\n",
+            list->data_size, data_size);
+        return 0;
+    }
+
+    const long long int i = index_of(list, data, data_size);
+
+    if (i < 0)
+    {
+        fprintf(stderr, "Element not found!\n");
+        return 0;
+    }
+
+    void* removed = remove_at(list, i);
+
+    if (!removed)
+    {
+        return 0;
+    }
+
+    const int res = memcmp(removed, data, data_size) == 0;
+
+    return res;
+}
