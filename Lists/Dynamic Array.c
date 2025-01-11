@@ -434,3 +434,47 @@ int remove_all(dynamic_array* list, dynamic_array* other_list)
 
     return 1;
 }
+
+void remove_range(dynamic_array* list, const size_t start, const size_t end)
+{
+    if (!list)
+    {
+        fprintf(stderr, "Null pointer passed to remove_range()\n");
+        return;
+    }
+
+    if (start >= list->size)
+    {
+        fprintf(stderr, "Index out of bounds: start (%lu) can not be larger than list->size (%lu)\n", start
+                , list->size);
+        return;
+    }
+
+    if (start > end)
+    {
+        fprintf(stderr, "Invalid range: start %lu > end %lu\n", start, end);
+        return;
+    }
+
+    if (start == end)
+    {
+        void* removed = remove_at(list, end);
+        if (removed)
+        {
+            free(removed);
+        }
+        return;
+    }
+
+    long long int c = end < list->size ? (long long int)end : (long long int)list->size - 1;
+
+    while (c >= start)
+    {
+        void* removed = remove_at(list, c);
+        if (removed)
+        {
+            free(removed);
+        }
+        c--;
+    }
+}
