@@ -49,12 +49,6 @@ cmake_ninja_workdir = /home/ahmad/Documents/C/DataStructures/cmake-build-debug/
 
 build cmake_object_order_depends_target_DataStructures: phony || .
 
-build CMakeFiles/DataStructures.dir/library.c.o: C_COMPILER__DataStructures_unscanned_Debug /home/ahmad/Documents/C/DataStructures/library.c || cmake_object_order_depends_target_DataStructures
-  DEP_FILE = CMakeFiles/DataStructures.dir/library.c.o.d
-  FLAGS = -g -std=gnu2x -fdiagnostics-color=always
-  OBJECT_DIR = CMakeFiles/DataStructures.dir
-  OBJECT_FILE_DIR = CMakeFiles/DataStructures.dir
-
 build CMakeFiles/DataStructures.dir/Lists/Dynamic_Array.c.o: C_COMPILER__DataStructures_unscanned_Debug /home/ahmad/Documents/C/DataStructures/Lists/Dynamic$ Array.c || cmake_object_order_depends_target_DataStructures
   DEP_FILE = CMakeFiles/DataStructures.dir/Lists/Dynamic_Array.c.o.d
   FLAGS = -g -std=gnu2x -fdiagnostics-color=always
@@ -69,13 +63,45 @@ build CMakeFiles/DataStructures.dir/Lists/Dynamic_Array.c.o: C_COMPILER__DataStr
 #############################################
 # Link the static library libDataStructures.a
 
-build libDataStructures.a: C_STATIC_LIBRARY_LINKER__DataStructures_Debug CMakeFiles/DataStructures.dir/library.c.o CMakeFiles/DataStructures.dir/Lists/Dynamic_Array.c.o
+build libDataStructures.a: C_STATIC_LIBRARY_LINKER__DataStructures_Debug CMakeFiles/DataStructures.dir/Lists/Dynamic_Array.c.o
   LANGUAGE_COMPILE_FLAGS = -g
   OBJECT_DIR = CMakeFiles/DataStructures.dir
   POST_BUILD = :
   PRE_LINK = :
   TARGET_FILE = libDataStructures.a
   TARGET_PDB = DataStructures.a.dbg
+
+# =============================================================================
+# Object build statements for EXECUTABLE target DataStructuresE
+
+
+#############################################
+# Order-only phony target for DataStructuresE
+
+build cmake_object_order_depends_target_DataStructuresE: phony || cmake_object_order_depends_target_DataStructures
+
+build CMakeFiles/DataStructuresE.dir/main.c.o: C_COMPILER__DataStructuresE_unscanned_Debug /home/ahmad/Documents/C/DataStructures/main.c || cmake_object_order_depends_target_DataStructuresE
+  DEP_FILE = CMakeFiles/DataStructuresE.dir/main.c.o.d
+  FLAGS = -g -std=gnu2x -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles/DataStructuresE.dir
+  OBJECT_FILE_DIR = CMakeFiles/DataStructuresE.dir
+
+
+# =============================================================================
+# Link build statements for EXECUTABLE target DataStructuresE
+
+
+#############################################
+# Link the executable DataStructuresE
+
+build DataStructuresE: C_EXECUTABLE_LINKER__DataStructuresE_Debug CMakeFiles/DataStructuresE.dir/main.c.o | libDataStructures.a || libDataStructures.a
+  FLAGS = -g
+  LINK_LIBRARIES = libDataStructures.a
+  OBJECT_DIR = CMakeFiles/DataStructuresE.dir
+  POST_BUILD = :
+  PRE_LINK = :
+  TARGET_FILE = DataStructuresE
+  TARGET_PDB = DataStructuresE.dbg
 
 
 #############################################
@@ -113,7 +139,7 @@ build DataStructures: phony libDataStructures.a
 #############################################
 # Folder: /home/ahmad/Documents/C/DataStructures/cmake-build-debug
 
-build all: phony libDataStructures.a
+build all: phony libDataStructures.a DataStructuresE
 
 # =============================================================================
 # Built-in targets
