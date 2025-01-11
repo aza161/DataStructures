@@ -36,17 +36,17 @@ static dynamic_array* allocate_dynamic_array(const size_t data_size, const size_
     return list;
 }
 
-dynamic_array* initialize_dynamic_array_empty(const size_t data_size)
+dynamic_array* dynarr_initialize_empty(const size_t data_size)
 {
     return allocate_dynamic_array(data_size, DEFAULT_CAPACITY);
 }
 
-dynamic_array* initialize_dynamic_array_sized(const size_t capacity, const size_t data_size)
+dynamic_array* dynarr_initialize_sized(const size_t capacity, const size_t data_size)
 {
     return allocate_dynamic_array(data_size, capacity);
 }
 
-dynamic_array* initialize_dynamic_array_from(const dynamic_array* list, const size_t data_size)
+dynamic_array* dynarr_initialize_from(const dynamic_array* list, const size_t data_size)
 {
     if (!list)
     {
@@ -70,6 +70,17 @@ dynamic_array* initialize_dynamic_array_from(const dynamic_array* list, const si
     return new_list;
 }
 
+void dynarr_destroy(dynamic_array* list)
+{
+    if (!list)
+    {
+        return;
+    }
+
+    free(list->data);
+    free(list);
+}
+
 static int grow_dynamic_list(dynamic_array* list)
 {
     list->capacity <<= 1;
@@ -86,11 +97,11 @@ static int grow_dynamic_list(dynamic_array* list)
     return 1;
 }
 
-int add(dynamic_array* list, const void* data, const size_t data_size)
+int dynarr_add(dynamic_array* list, const void* data, const size_t data_size)
 {
     if (!list || !data)
     {
-        fprintf(stderr, "Null pointer passed to add()\n");
+        fprintf(stderr, "Null pointer passed to dynarr_add()\n");
         return 0;
     }
 
@@ -113,11 +124,11 @@ int add(dynamic_array* list, const void* data, const size_t data_size)
     return 0;
 }
 
-int insert(dynamic_array* list, const size_t index, const void* data, const size_t data_size)
+int dynarr_insert(dynamic_array* list, const size_t index, const void* data, const size_t data_size)
 {
     if (!list || !data)
     {
-        fprintf(stderr, "Null pointer passed to insert()\n");
+        fprintf(stderr, "Null pointer passed to dynarr_insert()\n");
         return 0;
     }
 
@@ -147,11 +158,11 @@ int insert(dynamic_array* list, const size_t index, const void* data, const size
     return 0;
 }
 
-int add_all(dynamic_array* list, dynamic_array* other_list)
+int dynarr_add_all(dynamic_array* list, dynamic_array* other_list)
 {
     if (!list || !other_list)
     {
-        fprintf(stderr, "Null pointer passed to add_all()\n");
+        fprintf(stderr, "Null pointer passed to dynarr_add_all()\n");
         return 0;
     }
 
@@ -173,7 +184,7 @@ int add_all(dynamic_array* list, dynamic_array* other_list)
 
     if (!data_ptr)
     {
-        fprintf(stderr, "Memory allocation failed in add_all(). Unable to add elements from other_list\n");
+        fprintf(stderr, "Memory allocation failed in dynarr_add_all(). Unable to add elements from other_list\n");
         list->capacity = old_capacity;
         return 0;
     }
@@ -187,9 +198,9 @@ int add_all(dynamic_array* list, dynamic_array* other_list)
     return 1;
 }
 
-// Note: If the list stores pointers or other lists they should be freed individually before calling clear()
+// Note: If the list stores pointers or other lists they should be freed individually before calling dynarr_clear()
 // As that would cause a memory leak.
-void clear(dynamic_array* list)
+void dynarr_clear(dynamic_array* list)
 {
     if (!list)
     {
@@ -201,7 +212,7 @@ void clear(dynamic_array* list)
 
     if (!data_ptr)
     {
-        fprintf(stderr, "Failed to allocate memory in clear()\n");
+        fprintf(stderr, "Failed to allocate memory in dynarr_clear()\n");
         list->data = NULL;
         return;
     }
@@ -211,16 +222,16 @@ void clear(dynamic_array* list)
     list->capacity = DEFAULT_CAPACITY;
 }
 
-dynamic_array* clone(const dynamic_array* list)
+dynamic_array* dynarr_clone(const dynamic_array* list)
 {
-    return initialize_dynamic_array_from(list, list->data_size);
+    return dynarr_initialize_from(list, list->data_size);
 }
 
-int contains(const dynamic_array* list, const void* data, const size_t data_size)
+int dynarr_contains(const dynamic_array* list, const void* data, const size_t data_size)
 {
     if (!list || !data)
     {
-        fprintf(stderr, "Null pointer passed to contains()\n");
+        fprintf(stderr, "Null pointer passed to dynarr_contains()\n");
         return 0;
     }
 
@@ -243,11 +254,11 @@ int contains(const dynamic_array* list, const void* data, const size_t data_size
     return 0;
 }
 
-void ensure_capacity(dynamic_array* list, size_t capacity)
+void dynarr_ensure_capacity(dynamic_array* list, size_t capacity)
 {
     if (!list)
     {
-        fprintf(stderr, "Null pointer passed to ensure_capacity()\n");
+        fprintf(stderr, "Null pointer passed to dynarr_ensure_capacity()\n");
         return;
     }
     if (list->size > capacity)
@@ -271,11 +282,11 @@ void ensure_capacity(dynamic_array* list, size_t capacity)
     }
 }
 
-void* get(dynamic_array* list, const size_t index)
+void* dynarr_get(dynamic_array* list, const size_t index)
 {
     if (!list)
     {
-        fprintf(stderr, "Null pointer passed to get()\n");
+        fprintf(stderr, "Null pointer passed to dynarr_get()\n");
         return nullptr;
     }
 
@@ -287,11 +298,11 @@ void* get(dynamic_array* list, const size_t index)
     return (char*)(list->data) + (index * list->data_size);
 }
 
-long long int index_of(const dynamic_array* list, const void* data, const size_t data_size)
+long long int dynarr_index_of(const dynamic_array* list, const void* data, const size_t data_size)
 {
     if (!list || !data)
     {
-        fprintf(stderr, "Null pointer passed to index_of()\n");
+        fprintf(stderr, "Null pointer passed to dynarr_index_of()\n");
         return -1;
     }
 
@@ -314,16 +325,16 @@ long long int index_of(const dynamic_array* list, const void* data, const size_t
     return -1;
 }
 
-int is_empty(const dynamic_array* list)
+int dynarr_is_empty(const dynamic_array* list)
 {
     return list->size == 0;
 }
 
-long long int last_index_of(dynamic_array* list, const void* data, const size_t data_size)
+long long int dynarr_last_index_of(dynamic_array* list, const void* data, const size_t data_size)
 {
     if (!list || !data)
     {
-        fprintf(stderr, "Null pointer passed to last_index_of()\n");
+        fprintf(stderr, "Null pointer passed to dynarr_last_index_of()\n");
         return -1;
     }
 
@@ -346,11 +357,11 @@ long long int last_index_of(dynamic_array* list, const void* data, const size_t 
     return -1;
 }
 
-void* remove_at(dynamic_array* list, const size_t index)
+void* dynarr_remove_at(dynamic_array* list, const size_t index)
 {
     if (!list)
     {
-        fprintf(stderr, "Null pointer passed to remove_at()\n");
+        fprintf(stderr, "Null pointer passed to dynarr_remove_at()\n");
         return nullptr;
     }
 
@@ -383,11 +394,11 @@ void* remove_at(dynamic_array* list, const size_t index)
     return res;
 }
 
-int remove_element(dynamic_array* list, const void* data, const size_t data_size)
+int dynarr_remove_element(dynamic_array* list, const void* data, const size_t data_size)
 {
     if (!list || !data)
     {
-        fprintf(stderr, "Null pointer passed to remove_at()\n");
+        fprintf(stderr, "Null pointer passed to dynarr_remove_at()\n");
         return 0;
     }
 
@@ -399,7 +410,7 @@ int remove_element(dynamic_array* list, const void* data, const size_t data_size
         return 0;
     }
 
-    const long long int i = index_of(list, data, data_size);
+    const long long int i = dynarr_index_of(list, data, data_size);
 
     if (i < 0)
     {
@@ -407,7 +418,7 @@ int remove_element(dynamic_array* list, const void* data, const size_t data_size
         return 0;
     }
 
-    void* removed = remove_at(list, i);
+    void* removed = dynarr_remove_at(list, i);
 
     if (!removed)
     {
@@ -419,11 +430,11 @@ int remove_element(dynamic_array* list, const void* data, const size_t data_size
     return res;
 }
 
-int remove_all(dynamic_array* list, dynamic_array* other_list)
+int dynarr_remove_all(dynamic_array* list, dynamic_array* other_list)
 {
     if (!list || !other_list)
     {
-        fprintf(stderr, "Null pointer passed to remove_all()\n");
+        fprintf(stderr, "Null pointer passed to dynarr_remove_all()\n");
         return 0;
     }
 
@@ -439,17 +450,17 @@ int remove_all(dynamic_array* list, dynamic_array* other_list)
     for (size_t i = 0; i < other_list->size; ++i)
     {
         const void* to_be_removed = (char*)(other_list->data) + (i * other_list->data_size);
-        remove_element(list, to_be_removed, list->data_size);
+        dynarr_remove_element(list, to_be_removed, list->data_size);
     }
 
     return 1;
 }
 
-void remove_range(dynamic_array* list, const size_t start, const size_t end)
+void dynarr_remove_range(dynamic_array* list, const size_t start, const size_t end)
 {
     if (!list)
     {
-        fprintf(stderr, "Null pointer passed to remove_range()\n");
+        fprintf(stderr, "Null pointer passed to dynarr_remove_range()\n");
         return;
     }
 
@@ -468,7 +479,7 @@ void remove_range(dynamic_array* list, const size_t start, const size_t end)
 
     if (start == end)
     {
-        void* removed = remove_at(list, end);
+        void* removed = dynarr_remove_at(list, end);
         if (removed)
         {
             free(removed);
@@ -480,7 +491,7 @@ void remove_range(dynamic_array* list, const size_t start, const size_t end)
 
     while (c >= start)
     {
-        void* removed = remove_at(list, c);
+        void* removed = dynarr_remove_at(list, c);
         if (removed)
         {
             free(removed);
@@ -489,39 +500,39 @@ void remove_range(dynamic_array* list, const size_t start, const size_t end)
     }
 }
 
-size_t size(dynamic_array* list)
+size_t dynarr_size(dynamic_array* list)
 {
     if (!list)
     {
-        fprintf(stderr, "Null pointer passed to size()\n");
+        fprintf(stderr, "Null pointer passed to dynarr_size()\n");
         return 0;
     }
 
     return list->size;
 }
 
-void sort(dynamic_array* list, int (*compar)(const void*, const void*))
+void dynarr_sort(dynamic_array* list, int (*compar)(const void*, const void*))
 {
     if (!list || !compar)
     {
-        fprintf(stderr, "Null pointer passed to sort()\n");
+        fprintf(stderr, "Null pointer passed to dynarr_sort()\n");
         return;
     }
 
     if (list->size == 0)
     {
-        fprintf(stderr, "Cannot sort an empty array.\n");
+        fprintf(stderr, "Cannot dynarr_sort an empty array.\n");
         return;
     }
 
     qsort(list->data, list->size, list->data_size, compar);
 }
 
-dynamic_array* get_sub_list(dynamic_array* list, const size_t start, const size_t end)
+dynamic_array* dynarr_get_sub_list(dynamic_array* list, const size_t start, const size_t end)
 {
     if (!list)
     {
-        fprintf(stderr, "Null pointer passed to get_sub_list()\n");
+        fprintf(stderr, "Null pointer passed to dynarr_get_sub_list()\n");
         return nullptr;
     }
 
@@ -540,7 +551,7 @@ dynamic_array* get_sub_list(dynamic_array* list, const size_t start, const size_
 
     if (start == end)
     {
-        dynamic_array* res = initialize_dynamic_array_empty(list->data_size);
+        dynamic_array* res = dynarr_initialize_empty(list->data_size);
         if (!res)
         {
             fprintf(stderr, "Failed to allocate memory for Sublist");
@@ -555,7 +566,7 @@ dynamic_array* get_sub_list(dynamic_array* list, const size_t start, const size_
     const size_t sub_list_size = c - start;
 
 
-    dynamic_array* res = initialize_dynamic_array_sized(sub_list_size, list->data_size);
+    dynamic_array* res = dynarr_initialize_sized(sub_list_size, list->data_size);
 
     if (!res)
     {
@@ -571,13 +582,13 @@ dynamic_array* get_sub_list(dynamic_array* list, const size_t start, const size_
     return res;
 }
 
-void trim_to_size(dynamic_array* list)
+void dynarr_trim_to_size(dynamic_array* list)
 {
     if (!list)
     {
-        fprintf(stderr, "Null pointer passed to trim_to_size()\n");
+        fprintf(stderr, "Null pointer passed to dynarr_trim_to_size()\n");
         return;
     }
 
-    ensure_capacity(list, list->size);
+    dynarr_ensure_capacity(list, list->size);
 }

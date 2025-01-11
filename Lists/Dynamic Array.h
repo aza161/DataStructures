@@ -13,27 +13,28 @@
 typedef struct DYNAMIC_ARRAY dynamic_array;
 
 
-dynamic_array* initialize_dynamic_array_empty(const size_t data_size);
-dynamic_array* initialize_dynamic_array_sized(const size_t capacity, const size_t data_size);
-dynamic_array* initialize_dynamic_array_from(const dynamic_array* list, const size_t data_size);
-int add(dynamic_array* list, const void* data, const size_t data_size);
-int insert(dynamic_array* list, const size_t index, const void* data, const size_t data_size);
-int add_all(dynamic_array* list, dynamic_array* other_list);
-void clear(dynamic_array* list);
-dynamic_array* clone(const dynamic_array* list);
-int contains(const dynamic_array* list, const void* data, const size_t data_size);
-void ensure_capacity(dynamic_array* list, size_t capacity);
-void* get(dynamic_array* list, const size_t index);
-long long int index_of(const dynamic_array* list, const void* data, const size_t data_size);
-int is_empty(const dynamic_array* list);
-long long int last_index_of(dynamic_array* list, const void* data, const size_t data_size);
-void* remove_at(dynamic_array* list, const size_t index);
-int remove_element(dynamic_array* list, const void* data, const size_t data_size);
-int remove_all(dynamic_array* list, dynamic_array* other_list);
-void remove_range(dynamic_array* list, const size_t start, const size_t end);
-size_t size(dynamic_array* list);
-void sort(dynamic_array* list, int (*compar)(const void*, const void*));
-dynamic_array* get_sub_list(dynamic_array* list, const size_t start, const size_t end);
-void trim_to_size(dynamic_array* list);
+dynamic_array* dynarr_initialize_empty(const size_t data_size);
+dynamic_array* dynarr_initialize_sized(const size_t capacity, const size_t data_size);
+dynamic_array* dynarr_initialize_from(const dynamic_array* list, const size_t data_size);
+void dynarr_destroy(dynamic_array* list);
+int dynarr_add(dynamic_array* list, const void* data, const size_t data_size);
+int dynarr_insert(dynamic_array* list, const size_t index, const void* data, const size_t data_size);
+int dynarr_add_all(dynamic_array* list, dynamic_array* other_list);
+void dynarr_clear(dynamic_array* list);
+dynamic_array* dynarr_clone(const dynamic_array* list);
+int dynarr_contains(const dynamic_array* list, const void* data, const size_t data_size);
+void dynarr_ensure_capacity(dynamic_array* list, size_t capacity);
+void* dynarr_get(dynamic_array* list, const size_t index);
+long long int dynarr_index_of(const dynamic_array* list, const void* data, const size_t data_size);
+int dynarr_is_empty(const dynamic_array* list);
+long long int dynarr_last_index_of(dynamic_array* list, const void* data, const size_t data_size);
+void* dynarr_remove_at(dynamic_array* list, const size_t index);
+int dynarr_remove_element(dynamic_array* list, const void* data, const size_t data_size);
+int dynarr_remove_all(dynamic_array* list, dynamic_array* other_list);
+void dynarr_remove_range(dynamic_array* list, const size_t start, const size_t end);
+size_t dynarr_size(dynamic_array* list);
+void dynarr_sort(dynamic_array* list, int (*compar)(const void*, const void*));
+dynamic_array* dynarr_get_sub_list(dynamic_array* list, const size_t start, const size_t end);
+void dynarr_trim_to_size(dynamic_array* list);
 
 #endif //_DATASTRUCTURES_DYNAMIC_ARRAY_H
