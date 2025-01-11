@@ -476,7 +476,7 @@ void remove_range(dynamic_array* list, const size_t start, const size_t end)
         return;
     }
 
-    long long int c = end < list->size ? (long long int)end : (long long int)list->size - 1;
+    long long int c = end < list->size ? (long long int)(end - 1) : (long long int)list->size - 1;
 
     while (c >= start)
     {
@@ -515,4 +515,58 @@ void sort(dynamic_array* list, int (*compar)(const void*, const void*))
     }
 
     qsort(list->data, list->size, list->data_size, compar);
+}
+
+dynamic_array* get_sub_list(dynamic_array* list, const size_t start, const size_t end)
+{
+    if (!list)
+    {
+        fprintf(stderr, "Null pointer passed to get_sub_list()\n");
+        return nullptr;
+    }
+
+    if (start >= list->size)
+    {
+        fprintf(stderr, "Index out of bounds: start (%lu) can not be larger than list->size (%lu)\n", start
+                , list->size);
+        return nullptr;
+    }
+
+    if (start > end)
+    {
+        fprintf(stderr, "Invalid range: start %lu > end %lu\n", start, end);
+        return nullptr;
+    }
+
+    if (start == end)
+    {
+        dynamic_array* res = initialize_dynamic_array_empty(list->data_size);
+        if (!res)
+        {
+            fprintf(stderr, "Failed to allocate memory for Sublist");
+            return nullptr;
+        }
+        const void* src = (char*)(list->data) + (end * list->data_size);
+        memcpy(res->data, src, list->data_size);
+        return res;
+    }
+
+    const long long int c = end < list->size ? (long long int)end : (long long int)list->size - 1;
+    const size_t sub_list_size = c - start;
+
+
+    dynamic_array* res = initialize_dynamic_array_sized(sub_list_size, list->data_size);
+
+    if (!res)
+    {
+        fprintf(stderr, "Failed to allocate memory for Sublist");
+        return nullptr;
+    }
+
+    const void* src = (char*)(list->data) + (start * list->data_size);
+    memcpy(res->data, src, sub_list_size * res->data_size);
+
+    res->size = sub_list_size;
+
+    return res;
 }
