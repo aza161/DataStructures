@@ -570,3 +570,14 @@ dynamic_array* get_sub_list(dynamic_array* list, const size_t start, const size_
 
     return res;
 }
+
+void trim_to_size(dynamic_array* list)
+{
+    if (!list)
+    {
+        fprintf(stderr, "Null pointer passed to trim_to_size()\n");
+        return;
+    }
+
+    ensure_capacity(list, list->size);
+}
