@@ -358,14 +358,14 @@ void* remove_at(dynamic_array* list, const size_t index)
         return nullptr;
     }
 
-    void* element_src = (char*)(list->data) + ((index) * list->data_size);
+    const void* element_src = (char*)(list->data) + ((index) * list->data_size);
     memcpy(res, element_src, list->data_size);
 
     if (index < list->size)
     {
         const void* src = (char*)(list->data) + ((index + 1) * list->data_size);
         void* dest = (char*)(list->data) + (index * list->data_size);
-        size_t buffer_size = (list->size - index - 1) * list->data_size;
+        const size_t buffer_size = (list->size - index - 1) * list->data_size;
         memmove(dest, src, buffer_size);
     }
 
@@ -407,4 +407,30 @@ int remove_element(dynamic_array* list, const void* data, const size_t data_size
     const int res = memcmp(removed, data, data_size) == 0;
 
     return res;
+}
+
+int remove_all(dynamic_array* list, dynamic_array* other_list)
+{
+    if (!list || !other_list)
+    {
+        fprintf(stderr, "Null pointer passed to remove_all()\n");
+        return 0;
+    }
+
+    if (list->data_size != other_list->data_size)
+    {
+        fprintf(
+            stderr,
+            "Cannot remove an element of different data_size\nlist->data_size = %lu != other_list->data_size = %lu\n",
+            list->data_size, other_list->data_size);
+        return 0;
+    }
+
+    for (size_t i = 0; i < other_list->size; ++i)
+    {
+        const void* to_be_removed = (char*)(other_list->data) + (i * other_list->data_size);
+        remove_element(list, to_be_removed, list->data_size);
+    }
+
+    return 1;
 }
