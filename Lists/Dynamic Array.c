@@ -162,15 +162,25 @@ int add_all(dynamic_array* list, dynamic_array* other_list)
         return 0;
     }
 
+    const size_t old_capacity = list->capacity;
+
     while (list->capacity < (other_list->size + list->size))
     {
-        if (!grow_dynamic_list(list))
-        {
-            return 0;
-        }
+        list->capacity <<= 1;
     }
 
-    void* src = (char*)(other_list->data);
+    void* data_ptr = realloc(list->data, list->capacity * list->data_size);
+
+    if (!data_ptr)
+    {
+        fprintf(stderr, "Memory allocation failed in add_all(). Unable to add elements from other_list\n");
+        list->capacity = old_capacity;
+        return 0;
+    }
+
+    list->data = data_ptr;
+
+    const void* src = (char*)(other_list->data);
     void* dest = (char*)(list->data) + (list->size * list->data_size);
     memcpy(dest, src, other_list->data_size * other_list->size);
     list->size += other_list->size;
