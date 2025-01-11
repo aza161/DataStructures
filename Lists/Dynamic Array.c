@@ -478,3 +478,14 @@ void remove_range(dynamic_array* list, const size_t start, const size_t end)
         c--;
     }
 }
+
+size_t size(dynamic_array* list)
+{
+    if (!list)
+    {
+        fprintf(stderr, "Null pointer passed to size()\n");
+        return 0;
+    }
+
+    return list->size;
+}
