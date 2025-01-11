@@ -489,3 +489,20 @@ size_t size(dynamic_array* list)
 
     return list->size;
 }
+
+void sort(dynamic_array* list, int (*compar)(const void*, const void*))
+{
+    if (!list || !compar)
+    {
+        fprintf(stderr, "Null pointer passed to sort()\n");
+        return;
+    }
+
+    if (list->size == 0)
+    {
+        fprintf(stderr, "Cannot sort an empty array.\n");
+        return;
+    }
+
+    qsort(list->data, list->size, list->data_size, compar);
+}
