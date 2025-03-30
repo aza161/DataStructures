@@ -1,13 +1,30 @@
+/**************************************************************************
+ *   Dynamic Array.c  --  This file is part of Data Structures Library.   *
+ *                                                                        *
+ *   Copyright (C) 2025 Ahmad Al Rabia.                                   *
+ *                                                                        *
+ *   Data Structures Library is free software: you can redistribute it    *
+ *   and/or modify it.                                                    *
+ *                                                                        *
+ *   Data Structures Library is distributed in the hope that it will be   *
+ *   useful, but WITHOUT ANY WARRANTY; without even the implied warranty  *
+ *   of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.              *
+ *                                                                        *
+ **************************************************************************/
+
 #include "Dynamic Array.h"
 
-#define DEFAULT_CAPACITY 10
-
+/* Structure type. */
 typedef struct DYNAMIC_ARRAY
 {
     void* data;
+                /* Points to the data in the list */
     size_t size;
+                /* The number of elements in the list */
     size_t data_size;
+                /* The size of a single data element in bytes */
     size_t capacity;
+                /* The actual capacity of the allocated memory for the list */
 } dynamic_array;
 
 
@@ -391,6 +408,12 @@ void* dynarr_remove_at(dynamic_array* list, const size_t index)
     }
 
     list->size--;
+
+    if (list->size <= list->capacity / 4)
+    {
+        dynarr_ensure_capacity(list, list->capacity / 2);
+    }
+
     return res;
 }
 
@@ -427,6 +450,11 @@ int dynarr_remove_element(dynamic_array* list, const void* data, const size_t da
 
     const int res = memcmp(removed, data, data_size) == 0;
 
+    if (list->size <= list->capacity / 4)
+    {
+        dynarr_ensure_capacity(list, list->capacity / 2);
+    }
+
     return res;
 }
 
@@ -451,6 +479,11 @@ int dynarr_remove_all(dynamic_array* list, dynamic_array* other_list)
     {
         const void* to_be_removed = (char*)(other_list->data) + (i * other_list->data_size);
         dynarr_remove_element(list, to_be_removed, list->data_size);
+    }
+
+    if (list->size <= list->capacity / 4)
+    {
+        dynarr_ensure_capacity(list, list->capacity / 2);
     }
 
     return 1;
@@ -497,6 +530,11 @@ void dynarr_remove_range(dynamic_array* list, const size_t start, const size_t e
             free(removed);
         }
         c--;
+    }
+
+    if (list->size <= list->capacity / 4)
+    {
+        dynarr_ensure_capacity(list, list->capacity / 2);
     }
 }
 
