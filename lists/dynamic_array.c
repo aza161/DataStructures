@@ -365,20 +365,14 @@ bool dynarr_last_index_of(dynamic_array* list, const void* data, const size_t da
         return false;
     }
 
-    for (size_t i = list->size - 1; i > 0; --i)
+    for (size_t i = list->size; i > 0; --i)
     {
-        const void* src = (unsigned char*)(list->data) + (i * data_size);
+        const void* src = (unsigned char*)(list->data) + ((i - 1) * data_size);
         if (!memcmp(data, src, data_size))
         {
-            *index = i;
+            *index = i - 1;
             return true;
         }
-    }
-
-    if (!memcmp(data, list->data, data_size))
-    {
-        *index = 0;
-        return true;
     }
 
     return false;
