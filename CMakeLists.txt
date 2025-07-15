@@ -5,8 +5,10 @@ set(CMAKE_C_STANDARD 23)
 
 # Add static library
 add_library(DataStructures STATIC
-        "lists/dynamic_array.c"
-        "lists/dynamic_array.h"
+        lists/dynamic_array.c
+        lists/dynamic_array.h
+        lists/singly_linked_list.h
+        lists/singly_linked_list.c
 )
 
 # Add executable
