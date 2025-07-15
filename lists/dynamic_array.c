@@ -1,5 +1,5 @@
 /**************************************************************************
- *   Dynamic Array.c  --  This file is part of Data Structures Library.   *
+ *   dynamic_array.c  --  This file is part of Data Structures Library.   *
  *                                                                        *
  *   Copyright (C) 2025 Ahmad Al Rabia.                                   *
  *                                                                        *
@@ -277,11 +277,6 @@ void dynarr_clear(dynamic_array* list)
     list->size = 0;
 }
 
-dynamic_array* dynarr_clone(const dynamic_array* list)
-{
-    return dynarr_initialize_from(list, list->data_size);
-}
-
 bool dynarr_contains(const dynamic_array* list, const void* data, const size_t data_size)
 {
     if ((!list || !data) || (list->data_size != data_size))
@@ -323,7 +318,7 @@ bool dynarr_ensure_capacity(dynamic_array* list, const size_t capacity)
     return true;
 }
 
-void* dynarr_get(dynamic_array* list, const size_t index)
+void* dynarr_get(const dynamic_array* list, const size_t index)
 {
     if ((!list) || (index >= list->size))
     {
@@ -358,7 +353,7 @@ int dynarr_is_empty(const dynamic_array* list)
     return list->size == 0;
 }
 
-bool dynarr_last_index_of(dynamic_array* list, const void* data, const size_t data_size, size_t* index)
+bool dynarr_last_index_of(const dynamic_array* list, const void* data, const size_t data_size, size_t* index)
 {
     if ((!list || !data || !index) || (list->data_size != data_size))
     {
@@ -441,7 +436,7 @@ bool dynarr_remove_element(dynamic_array* list, const void* data, const size_t d
     return res;
 }
 
-bool dynarr_remove_all(dynamic_array* list, dynamic_array* other_list)
+bool dynarr_remove_all(dynamic_array* list, const dynamic_array* other_list)
 {
     if ((!list || !other_list) || (list->data_size != other_list->data_size))
     {
@@ -481,7 +476,7 @@ void dynarr_remove_range(dynamic_array* list, const size_t start, const size_t e
     }
 }
 
-size_t dynarr_size(dynamic_array* list)
+size_t dynarr_size(const dynamic_array* list)
 {
     if (!list)
     {
@@ -501,7 +496,7 @@ void dynarr_sort(dynamic_array* list, int (*compar)(const void*, const void*))
     qsort(list->data, list->size, list->data_size, compar);
 }
 
-dynamic_array* dynarr_get_sub_list(dynamic_array* list, const size_t start, const size_t end)
+dynamic_array* dynarr_get_sub_list(const dynamic_array* list, const size_t start, const size_t end)
 {
     if ((!list) || (start >= list->size) || (end > list->size) || (start >= end))
     {
