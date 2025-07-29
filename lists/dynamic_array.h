@@ -54,11 +54,11 @@ dynamic_array* dynarr_initialize_from(const dynamic_array* list, const size_t da
 void dynarr_destroy(dynamic_array* list);
 
 
-void* dynarr_get(const dynamic_array* list, const size_t index);
+bool dynarr_get(const dynamic_array* list, const size_t index, void* out_data, const size_t data_size);
 dynamic_array* dynarr_get_sub_list(const dynamic_array* list, const size_t start, const size_t end);
 
 
-void* dynarr_remove_at(dynamic_array* list, const size_t index);
+bool dynarr_remove_at(dynamic_array* list, const size_t index, void* out_data, const size_t data_size);
 bool dynarr_remove_element(dynamic_array* list, const void* data, const size_t data_size);
 bool dynarr_remove_all(dynamic_array* list, const dynamic_array* other_list);
 void dynarr_remove_range(dynamic_array* list, const size_t start, const size_t end);

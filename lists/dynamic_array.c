@@ -318,14 +318,15 @@ bool dynarr_ensure_capacity(dynamic_array* list, const size_t capacity)
     return true;
 }
 
-void* dynarr_get(const dynamic_array* list, const size_t index)
+bool dynarr_get(const dynamic_array* list, const size_t index, void* out_data, const size_t data_size)
 {
-    if ((!list) || (index >= list->size))
+    if ((!list) || (index >= list->size) || (list->data_size != data_size) || !out_data)
     {
-        return nullptr;
+        return false;
     }
 
-    return (unsigned char*)(list->data) + (index * list->data_size);
+    memcpy(out_data, (unsigned char*)(list->data) + (index * list->data_size), data_size);
+    return true;
 }
 
 bool dynarr_index_of(const dynamic_array* list, const void* data, const size_t data_size, size_t* index)
@@ -373,22 +374,15 @@ bool dynarr_last_index_of(const dynamic_array* list, const void* data, const siz
     return false;
 }
 
-void* dynarr_remove_at(dynamic_array* list, const size_t index)
+bool dynarr_remove_at(dynamic_array* list, const size_t index, void* out_data, const size_t data_size)
 {
-    if ((!list) || (index >= list->size))
+    if ((!list) || (index >= list->size) || (list->data_size != data_size) || (!out_data))
     {
-        return nullptr;
-    }
-
-    void* res = malloc(list->data_size);
-
-    if (!res)
-    {
-        return nullptr;
+        return false;
     }
 
     const void* element_src = (unsigned char*)(list->data) + (index * list->data_size);
-    memcpy(res, element_src, list->data_size);
+    memcpy(out_data, element_src, list->data_size);
 
     if (index < list->size - 1)
     {
@@ -405,7 +399,7 @@ void* dynarr_remove_at(dynamic_array* list, const size_t index)
         dynarr_ensure_capacity(list, list->capacity / 2);
     }
 
-    return res;
+    return true;
 }
 
 bool dynarr_remove_element(dynamic_array* list, const void* data, const size_t data_size)
@@ -422,7 +416,8 @@ bool dynarr_remove_element(dynamic_array* list, const void* data, const size_t d
         return false;
     }
 
-    void* removed = dynarr_remove_at(list, i);
+    void* removed = calloc(1, data_size);
+    dynarr_remove_at(list, i, removed, data_size);
 
     if (!removed)
     {
